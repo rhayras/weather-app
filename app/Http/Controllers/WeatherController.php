@@ -220,21 +220,23 @@ class WeatherController extends Controller
                     'accept' => 'application/json',
                 ])->get("https://api.foursquare.com/v3/places/" . $id . "/photos?limit=5");
 
-                $spotImageData = $imageRequest->json()[1];
-                $spotImageUrl = $spotImageData['prefix'] . "original" . $spotImageData['suffix'];
+                if (!empty($imageRequest->json())) {
+                    $spotImageData =  count($imageRequest->json()) > 1 ? $imageRequest->json()[1] : $imageRequest->json()[0];
+                    $spotImageUrl = $spotImageData['prefix'] . "original" . $spotImageData['suffix'];
 
-                $active = ($count == 1) ? "active" : "";
-                $html .= '
-                <div class="carousel-item ' . $active . '">
-                    <img src="' . url('assets/images/loading-img.gif') . '" data-original="' . $spotImageUrl . '" class="carousel-img d-block lazy" alt="' . $spotName . '">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5>' . $spotName . '</h5>
-                            <span><small>' . $category . '</small></span>
+                    $active = ($count == 1) ? "active" : "";
+                    $html .= '
+                    <div class="carousel-item ' . $active . '">
+                        <img src="' . url('assets/images/loading-img.gif') . '" data-original="' . $spotImageUrl . '" class="carousel-img d-block lazy" alt="' . $spotName . '">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>' . $spotName . '</h5>
+                                <span><small>' . $category . '</small></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                ';
+                    ';
+                }
             }
         }
 
